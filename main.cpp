@@ -5,25 +5,22 @@
 
 int main() {
     try {
-        vector<Communication*> models = {new WiFi4(), new WiFi5(), new WiFi6()};
-        vector<int> users = {1, 10, 100};
+        vector<unique_ptr<Communication>> models;
+        models.push_back(make_unique<WiFi4>());
+        models.push_back(make_unique<WiFi5>());
+        models.push_back(make_unique<WiFi6>());
 
-        for (auto& model : models) {
-            for (int usersCount : users) {
-                model->simulate(usersCount, 1);  // Assuming 1 AP for each case
+        vector<int> users = {100,10,1};
+
+        for (const auto& model : models) {
+            for (int numUsers : users) {
+                model->simulate(numUsers, 1);
                 cout << endl;
             }
         }
-
-        // Clean up
-        for (auto& model : models) {
-            delete model;
-        }
-    }
-    catch (const SimulationException& e) {
+    } catch (const SimulationException& e) {
         cerr << "Simulation Error: " << e.what() << endl;
-    }
-    catch (const exception& e) {
+    } catch (const exception& e) {
         cerr << "General Error: " << e.what() << endl;
     }
 

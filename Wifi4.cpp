@@ -1,16 +1,11 @@
 #include "WiFi4.h"
-#include <iostream>
-
-using namespace std;
 
 void WiFi4::simulate(int numUsers, int numAPs) {
     cout << "Simulating WiFi 4 with " << numUsers << " users and " << numAPs << " AP(s)." << endl;
 
-    int totalPackets = numUsers * 10;  // Simulating 10 packets per user
-    double totalData = 0;              // Total data successfully transmitted (in KB)
-    double totalTime = 0;              // Total simulation time (in ms)
-    double totalLatency = 0;           // Cumulative latency (in ms)
-    int maxLatency = 0;                // Maximum latency observed (in ms)
+    int totalPackets = numUsers * 10;
+    double totalData = 0, totalTime = 0, totalLatency = 0;
+    int maxLatency = 0;
 
     for (int i = 0; i < totalPackets; ++i) {
         int backoffTime = getBackoffTime(numUsers);
@@ -28,4 +23,11 @@ void WiFi4::simulate(int numUsers, int numAPs) {
     cout << "Throughput: " << throughput << " KB/ms" << endl;
     cout << "Average Latency: " << totalLatency / totalPackets << " ms" << endl;
     cout << "Maximum Latency: " << maxLatency << " ms" << endl;
+}
+
+int WiFi4::getBackoffTime(int numUsers) const {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(0, MAX_BACKOFF_TIME * numUsers);
+    return dis(gen);
 }

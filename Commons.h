@@ -4,8 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <ctime>
 #include <stdexcept>
+#include <memory>
+#include <algorithm>
 #include <cmath>
 
 using namespace std;
@@ -15,14 +16,9 @@ const int MAX_BACKOFF_TIME = 10;      // Max backoff time in ms
 const int TRANSMISSION_TIME_PER_PACKET = 1;  // Simplified transmission time for 1 KB packet
 
 // Exception class for simulation errors
-class SimulationException : public exception {
+class SimulationException : public runtime_error {
 public:
-    explicit SimulationException(const string& message) : message(message) {}
-    const char* what() const noexcept override {
-        return message.c_str();
-    }
-private:
-    string message;
+    explicit SimulationException(const string& message) : runtime_error(message) {}
 };
 
 // Abstract base class for Communication model
@@ -32,43 +28,33 @@ public:
     virtual ~Communication() = default;  // Virtual destructor
 };
 
-// User class represents a device that transmits packets
-class User {
+// Template for generic components (User, AP, Packet, etc.)
+template<typename IDType>
+class Entity {
 public:
-    User(int id) : userId(id) {}
-    int getId() const { return userId; }
+    explicit Entity(IDType id) : entityId(id) {}
+    IDType getId() const { return entityId; }
 private:
-    int userId;
+    IDType entityId;
 };
 
-// Access Point (AP) class manages multiple users and their communications
-class AP {
-public:
-    AP(int id) : apId(id) {}
-    int getId() const { return apId; }
-private:
-    int apId;
-};
+using User = Entity<int>;    // User entity with integer ID
+using AP = Entity<int>;      // Access Point (AP) entity with integer ID
 
-// Packet class represents a data packet
 class Packet {
 public:
-    Packet(int size = PACKET_SIZE) : size(size) {}
+    explicit Packet(int size = PACKET_SIZE) : size(size) {}
     int getSize() const { return size; }
 private:
     int size;  // Size of the packet
 };
 
-// FrequencyChannel class represents a frequency channel for communication
 class FrequencyChannel {
 public:
-    FrequencyChannel(double bandwidth = 20.0) : bandwidth(bandwidth) {}
+    explicit FrequencyChannel(double bandwidth = 20.0) : bandwidth(bandwidth) {}
     double getBandwidth() const { return bandwidth; }
 private:
     double bandwidth;
 };
-
-// Helper function to simulate backoff time
-
 
 #endif
