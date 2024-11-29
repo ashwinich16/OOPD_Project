@@ -10,7 +10,7 @@ int main() {
         models.push_back(make_unique<WiFi5>());
         models.push_back(make_unique<WiFi6>());
 
-        vector<int> users = {100,10,1};
+        vector<int> users = {1,10,100};
 
         for (const auto& model : models) {
             for (int numUsers : users) {
