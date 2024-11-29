@@ -31,9 +31,9 @@ wifi6.o: WiFi6.cpp Wifi6.h Commons.h
 	g++ -c WiFi6.cpp
 main.o: main.cpp Wifi4.h Wifi5.h Wifi6.h Commons.h
 	g++ -c main.cpp
-	
+
 # Command
 Open Terminal and enter
-    make
+	make
 
-    ./ouput
+	./output
